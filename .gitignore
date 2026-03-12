@@ -5,4 +5,4 @@
 /data/Classification_DS/seed_1337_output
 /data/Segmentation_Datasets/seed_2026
 /data/Segmentation_Datasets/seed_1337
-
+/mlruns/*
