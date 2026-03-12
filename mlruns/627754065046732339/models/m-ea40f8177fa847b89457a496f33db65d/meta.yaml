@@ -1,0 +1,10 @@
+artifact_location: file:c:/Users/Mustafa/Desktop/wound_pipeline/mlruns/627754065046732339/models/m-ea40f8177fa847b89457a496f33db65d/artifacts
+creation_timestamp: 1772660861504
+experiment_id: '627754065046732339'
+last_updated_timestamp: 1772660876051
+model_id: m-ea40f8177fa847b89457a496f33db65d
+model_type: null
+name: model
+source_run_id: 11b9830b2ff74b86b079648fba57e9ff
+status: 2
+status_message: null

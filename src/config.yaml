@@ -1,0 +1,52 @@
+# config.yaml
+# Main configuration file for Wound Pipeline
+
+paths:
+  # Base path for Segmentation Data
+  seg_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/Segmentation_DS/Segmentation_Datasets/seed_2026"
+  
+  # Base paths for Classification Data
+  cls_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/images_resized"
+  cls_mask_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/masks_pred"
+  
+  # External test paths (if used)
+  ext_test_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/ext_images"
+  ext_test_base_path_mask: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/ext_masks"
+
+  # Models and outputs
+  mlflow_tracking_uri: "file:c:/Users/Mustafa/Desktop/wound_pipeline/mlruns"
+  seg_output_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/models/segmentation_runs"
+  cls_output_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/models/classification_runs"
+  
+  # Inference
+  inference_input_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/data/inference/input"
+  inference_output_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/data/inference/output"
+
+segmentation:
+  mlflow_experiment_name: "wound_segmentation_unet"
+  img_size: [256, 256]
+  in_channels: 3
+  out_channels: 1
+  epochs: 2
+  batch_size: 12
+  lr: 0.0001
+  early_stopping_patience: 10
+  seed: 2026
+
+classification:
+  mlflow_experiment_name: "wound_classification_effnet"
+  img_size: [256, 256]
+  num_classes: 4
+  epochs: 70
+  batch_size: 28
+  lr: 0.001
+  early_stopping_patience: 8
+  seed: 42
+  use_augmented: true
+  aug_split_name: "train_aug"
+
+inference:
+  seg_model_path: "c:/Users/Mustafa/Desktop/wound_pipeline/models/wound_segmentation_model_best.pth"
+  cls_model_path: "c:/Users/Mustafa/Desktop/wound_pipeline/models/wound_classification_model_best.pth"
+  threshold: 0.5
+  save_tensor_pt: false

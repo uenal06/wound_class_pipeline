@@ -1,0 +1,7 @@
+artifact_location: file:c:/Users/Mustafa/Desktop/wound_pipeline/mlruns/627754065046732339
+creation_time: 1772659366493
+experiment_id: '627754065046732339'
+last_update_time: 1772659366493
+lifecycle_stage: active
+name: wound_segmentation_unet
+workspace: default
