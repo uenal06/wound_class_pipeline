@@ -1,4 +1,8 @@
 /text.md
 /_venv
 /__pycache__
-/data
+/data/Classification_DS/seed_2026_output
+/data/Classification_DS/seed_1337_output
+/data/Segmentation_Datasets/seed_2026
+/data/Segmentation_Datasets/seed_1337
+/data/Segmentation_Datasets/seed_42
