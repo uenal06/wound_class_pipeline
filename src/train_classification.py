@@ -252,6 +252,10 @@ class SoftGuidedAttentionEfficientNet(nn.Module):
 
         pooled = torch.cat([pooled_global, pooled_roi], dim=1)
         out = self.classifier(pooled)
+        
+        if getattr(self, 'export_gradcam', False):
+            return out, features
+            
         return out
 
 class EarlyStopping:

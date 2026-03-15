@@ -46,7 +46,7 @@ classification:
   aug_split_name: "train_aug"
 
 inference:
-  seg_model_path: "c:/Users/Mustafa/Desktop/wound_pipeline/models/wound_segmentation_model_best.pth"
-  cls_model_path: "c:/Users/Mustafa/Desktop/wound_pipeline/models/wound_classification_model_best.pth"
+  seg_model_path: "C:/Users/Mustafa/Desktop/wound_pipeline/models/segmentation_runs/wound_segmentation_model_best_scripted.pt"
+  cls_model_path: "C:/Users/Mustafa/Desktop/wound_pipeline/models/classification_runs/cls_with_mask.pt"
   threshold: 0.5
   save_tensor_pt: false
