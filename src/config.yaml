@@ -3,15 +3,15 @@
 
 paths:
   # Base path for Segmentation Data
-  seg_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/Segmentation_DS/Segmentation_Datasets/seed_2026"
+  seg_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/Segmentation_DS/Segmentation_Datasets/seed_2026"
   
   # Base paths for Classification Data
-  cls_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/images_resized"
-  cls_mask_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/masks_pred"
+  cls_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/classification/images_resized"
+  cls_mask_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/classification/masks_pred"
   
   # External test paths (if used)
-  ext_test_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/ext_images"
-  ext_test_base_path_mask: "c:/Users/Mustafa/Desktop/wound_pipeline/data/classification/ext_masks"
+  ext_test_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/classification/ext_images"
+  ext_test_base_path_mask: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/classification/ext_masks"
 
   # Models and outputs
   mlflow_tracking_uri: "file:c:/Users/Mustafa/Desktop/wound_pipeline/mlruns"
@@ -19,8 +19,8 @@ paths:
   cls_output_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/models/classification_runs"
   
   # Inference
-  inference_input_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/data/inference/input"
-  inference_output_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/data/inference/output"
+  inference_input_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/inference/input"
+  inference_output_dir: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/inference/output"
 
 segmentation:
   mlflow_experiment_name: "wound_segmentation_unet"
