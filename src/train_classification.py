@@ -322,6 +322,110 @@ def main():
     mask_path = paths['cls_mask_path']
     ext_test_base_path_mask = paths.get('ext_test_base_path_mask')
 
+    # DATA PREPARATION CHECK
+    # Check if the output mask directory has any masks. If not, generate them using the segmentation model.
+    # We infer the raw Data Source directory by replacing 'processed' with 'raw'
+    raw_input_dir = base_path.replace("/processed/", "/raw/").replace("\\processed\\", "\\raw\\")
+    classification_out_dir = base_path
+
+    def is_processed(mask_dir: str) -> bool:
+        if not os.path.exists(mask_dir):
+            return False
+        valid_exts = (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp")
+        for root, _, files in os.walk(mask_dir):
+            if any(f.endswith(valid_exts) for f in files):
+                return True
+        return False
+
+    already_processed = is_processed(mask_path)
+    if already_processed:
+        print(f"Classification directory '{mask_path}' is already processed (masks found). Skipping mask generation.")
+    else:
+        print("Masks not found or incomplete. Starting segmentation generation...")
+        print(f"Reading from: {raw_input_dir}")
+        print(f"Writing to:   {classification_out_dir}")
+        
+        # Load Segmentation TorchScript Model
+        seg_model_path = config['inference']['seg_model_path']
+        try:
+            seg_model = torch.jit.load(seg_model_path, map_location=device)
+            seg_model.eval()
+        except Exception as e:
+            print(f"Failed to load Segmentation model: {e}")
+            return
+            
+        threshold = config['inference'].get('threshold', 0.5)
+        seg_img_size = tuple(config['segmentation']['img_size'])
+        
+        resize_to_tensor_seg = T.Compose([
+            T.Resize(seg_img_size, interpolation=T.InterpolationMode.BILINEAR),
+            T.ToTensor(),
+        ])
+        normalize_seg = T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        
+        valid_exts = (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp")
+        out_rgb_root = classification_out_dir
+        out_mask_root = classification_out_dir
+        
+        count = 0
+        with torch.no_grad():
+            for root, _, files in os.walk(raw_input_dir):
+                for fn in files:
+                    if not fn.lower().endswith(valid_exts):
+                        continue
+                    
+                    in_path = os.path.join(root, fn)
+                    rel_dir = os.path.relpath(root, raw_input_dir)
+                    base_name = os.path.splitext(fn)[0]
+                    
+                    out_rgb_path = os.path.join(out_rgb_root, rel_dir, f"{base_name}.png")
+                    out_mask_path = os.path.join(out_mask_root, rel_dir, f"{base_name}_mask.png")
+                    
+                    if os.path.exists(out_rgb_path) and os.path.exists(out_mask_path):
+                        # skip individual file if somehow exists
+                        continue
+                        
+                    os.makedirs(os.path.dirname(out_rgb_path), exist_ok=True)
+                    os.makedirs(os.path.dirname(out_mask_path), exist_ok=True)
+                    
+                    try:
+                        img_pil = Image.open(in_path).convert("RGB")
+                    except Exception as e:
+                        print(f"Skipping {in_path}: {e}")
+                        continue
+                        
+                    x_resized = resize_to_tensor_seg(img_pil) # [3,H,W]
+                    x_norm = normalize_seg(x_resized).unsqueeze(0).to(device)
+                    
+                    seg_pred = seg_model(x_norm)
+                    if isinstance(seg_pred, (tuple, list)): 
+                        seg_pred = seg_pred[0]
+                    
+                    seg_pred = torch.sigmoid(seg_pred)
+                    if seg_pred.ndim == 4 and seg_pred.shape[1] == 1:
+                        seg_probs = seg_pred[0, 0].detach().cpu().numpy()
+                    else:
+                        seg_probs = seg_pred.squeeze().detach().cpu().numpy()
+                        
+                    mask_np = (seg_probs >= threshold).astype(np.uint8)
+                    
+                    # Save outputs
+                    x_rgb = x_resized.clamp(0.0, 1.0)
+                    rgb_arr = (x_rgb.permute(1, 2, 0).cpu().numpy() * 255.0).astype(np.uint8)
+                    rgb_out = Image.fromarray(rgb_arr)
+                    rgb_out.save(out_rgb_path)
+                    
+                    mask_out = Image.fromarray((mask_np * 255).astype(np.uint8))
+                    mask_out = mask_out.resize((seg_img_size[1], seg_img_size[0]), resample=Image.NEAREST)
+                    mask_out.save(out_mask_path)
+                    
+                    count += 1
+                    if count % 25 == 0:
+                        print(f"Segmented {count} images...")
+                        
+        print(f"Segmentation generation completed. Processed {count} images.")
+
+    print("\n--- Starting Classification Training ---")
     class_names, class_to_idx, samples = collect_samples_train_with_fallback(
         base_path=base_path,
         train_split="train",

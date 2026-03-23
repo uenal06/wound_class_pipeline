@@ -6,8 +6,8 @@ paths:
   seg_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/Segmentation_DS/Segmentation_Datasets/seed_2026"
   
   # Base paths for Classification Data
-  cls_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/classification/images_resized"
-  cls_mask_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/classification/masks_pred"
+  cls_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/Classification_DS"
+  cls_mask_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/Classification_DS"
   
   # External test paths (if used)
   ext_test_base_path: "c:/Users/Mustafa/Desktop/wound_pipeline/data/processed/classification/ext_images"
